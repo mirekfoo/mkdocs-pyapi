@@ -1,0 +1,21 @@
+src_root: src
+docs_root: docs-md
+index_md: index.md # relative to {{docs_root}}/{{pydoc_markdown.renderer.docs_base_path}}
+
+pydoc_markdown:
+  loaders:
+    - type: python
+      search_path:
+        - "{{relative_to(docs_root, src_root)}}"
+  processors:
+    - type: filter
+      skip_empty_modules: true
+    - type: smart
+    - type: crossref
+  renderer:
+    type: docusaurus
+    docs_base_path: docs # relative to {{docs_root}}  
+    relative_output_path: reference # relative to {{docs_root}}/{{pydoc_markdown.renderer.docs_base_path}}
+    relative_sidebar_path: sidebar.json # relative to {{docs_root}}/{{pydoc_markdown.renderer.relative_output_path}}
+    sidebar_top_level_label: 'Reference'
+
