@@ -1,0 +1,3 @@
+[submodule "deps/pyutils"]
+	path = deps/pyutils
+	url = https://github.com/mirekfoo/pyutils.git
