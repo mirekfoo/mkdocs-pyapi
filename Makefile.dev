@@ -13,29 +13,16 @@ help:
 	
 # --------------------------------------------------
 
-STAMP = @if [ ! -d ".stamps" ]; then mkdir -p ".stamps"; fi && touch $@
-
-# --------------------------------------------------
-
-EDIT_DEP_PYUTILS_INSTALL = .stamps/edit-dep-pyutils-install.done
-
-$(EDIT_DEP_PYUTILS_INSTALL):
-	git clone https://github.com/mirekfoo/pyutils.git
-	git submodule add https://github.com/mirekfoo/pyutils.git pyutils
-	pip install -e pyutils
-	$(STAMP)
-
-pyutils-update:
-	git -C pyutils pull
-
+.stamps:
+	@if [ ! -d ".stamps" ]; then mkdir -p ".stamps"; fi
 
 # --------------------------------------------------
 
 MKDOCS_INSTALL = .stamps/mkdocs-install.done
 
-$(MKDOCS_INSTALL):
+$(MKDOCS_INSTALL): .stamps
 	pip install mkdocs mkdocs-material mkdocstrings[python] mkdocs-gen-files 
-	$(STAMP)
+	touch $(MKDOCS_INSTALL)
 
 MKDOCS_DIR = docs-web
 
@@ -49,14 +36,10 @@ MKDOCS_DIR = docs-web
 
 PYUTILS_INSTALL = .stamps/pyutils-install.done
 
-$(PYUTILS_INSTALL):
+$(PYUTILS_INSTALL): .stamps
 	git clone https://github.com/mirekfoo/pyutils.git
-	git submodule add https://github.com/mirekfoo/pyutils.git pyutils
 	pip install -e pyutils
-	$(STAMP)
-
-pyutils-update:
-	git -C pyutils pull
+	touch $(PYUTILS_INSTALL)
 
 # --------------------------------------------------
 
@@ -64,16 +47,16 @@ mkdocs: $(MKDOCS_INSTALL) $(PYUTILS_INSTALL)
 	PYTHONPATH=./src python -m mkdocs_pyapi $(CMD)
 
 mkdocs-clean:
-	rm -f $(MKDOCS_DIR)
+	rm -rf $(MKDOCS_DIR)
 	rm -rf docs-web-site
 
 # --------------------------------------------------
 
 MDDOCS_INSTALL = .stamps/mddocs-install.done
 
-$(MDDOCS_INSTALL):
+$(MDDOCS_INSTALL): .stamps
 	pip install git+https://github.com/mirekfoo/mddocs.git 
-	$(STAMP)
+	touch $(MDDOCS_INSTALL)
 
 mddocs-install: $(MDDOCS_INSTALL)
 
@@ -85,9 +68,9 @@ PROJECT_SRC := $(wildcard src/mkdocs-pyapi/*.py)
 
 MDDOCS_GENERATE = .stamps/mddocs_generate.done
 
-$(MDDOCS_GENERATE): $(MDDOCS_INSTALL) $(PROJECT_SRC)
+$(MDDOCS_GENERATE): .stamps $(MDDOCS_INSTALL) $(PROJECT_SRC)
 	PYTHONPATH=./src python -m mddocs 
-	$(STAMP)
+	touch $(MDDOCS_GENERATE)
 
 mddocs-build: \
 	$(MDDOCS_GENERATE)
@@ -104,9 +87,9 @@ mddocs-run: \
 
 BUMPVER_INSTALL = .stamps/bumpver-install.done
 
-$(BUMPVER_INSTALL):
+$(BUMPVER_INSTALL): .stamps
 	pip install bumpver 
-	$(STAMP)
+	touch $(BUMPVER_INSTALL)
 
 bumpver: $(BUMPVER_INSTALL)
 	bumpver update --$(LEVEL)
