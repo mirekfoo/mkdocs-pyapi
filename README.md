@@ -30,10 +30,5 @@ git submodule add https://github.com/mirekfoo/pyutils.git deps/pyutils
 git clone --recurse-submodules https://github.com/mirekfoo/mkdocs-pyapi.git
 ```
 
-## Install dependencies
-```bash
-pip install -e .
-```
-
 ## Run procedures
 * Type `make help` for available **dev** procedures
