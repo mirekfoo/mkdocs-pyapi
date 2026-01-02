@@ -2,6 +2,11 @@ help:
 	@echo "Available targets:"
 	@echo "  help                                     - Show this help message"
 	@echo ""
+	@echo "  edit-deps-install                        - Install editable dependencies"
+	@echo "  edit-deps-update                         - Update editable dependencies"
+	@echo ""
+	@echo "  pyutils-update                           - Update pyutils"
+	@echo ""
 	@echo "  mkdocs CMD=build|serve|gh-deploy         - [Build / Serve/ Deploy to GitHub Pages] web docs using mkdocs"
 	@echo "  mkdocs-clean                             - Clean the web docs"
 	@echo ""
@@ -20,14 +25,15 @@ STAMP = @if [ ! -d ".stamps" ]; then mkdir -p ".stamps"; fi && touch $@
 EDIT_DEP_PYUTILS_INSTALL = .stamps/edit-dep-pyutils-install.done
 
 $(EDIT_DEP_PYUTILS_INSTALL):
-	git clone https://github.com/mirekfoo/pyutils.git
-	git submodule add https://github.com/mirekfoo/pyutils.git pyutils
-	pip install -e pyutils
+	pip install -e deps/pyutils
 	$(STAMP)
 
-pyutils-update:
-	git -C pyutils pull
+edit-deps-install: $(EDIT_DEP_PYUTILS_INSTALL)
 
+pyutils-update: $(EDIT_DEP_PYUTILS_INSTALL)
+	pushd deps/pyutils && git switch main && git pull && popd
+
+edit-deps-update: edit-deps-install pyutils-update
 
 # --------------------------------------------------
 
@@ -37,26 +43,11 @@ $(MKDOCS_INSTALL):
 	pip install mkdocs mkdocs-material mkdocstrings[python] mkdocs-gen-files 
 	$(STAMP)
 
-MKDOCS_DIR = docs-web
-
-# $(MKDOCS_DIR):
-# 	@if [ ! -d "$(MKDOCS_DIR)" ]; then mkdir -p "$(MKDOCS_DIR)"; fi
-
-# mkdocs: $(MKDOCS_INSTALL) $(MKDOCS_DIR)
-# 	PYTHONPATH=./src mkdocs $(CMD)
+DOCS_WEB_DIR = docs-web
 
 # --------------------------------------------------
 
-PYUTILS_INSTALL = .stamps/pyutils-install.done
-
-$(PYUTILS_INSTALL):
-	git clone https://github.com/mirekfoo/pyutils.git
-	git submodule add https://github.com/mirekfoo/pyutils.git pyutils
-	pip install -e pyutils
-	$(STAMP)
-
-pyutils-update:
-	git -C pyutils pull
+PYUTILS_INSTALL = $(EDIT_DEP_PYUTILS_INSTALL)
 
 # --------------------------------------------------
 
@@ -64,7 +55,7 @@ mkdocs: $(MKDOCS_INSTALL) $(PYUTILS_INSTALL)
 	PYTHONPATH=./src python -m mkdocs_pyapi $(CMD)
 
 mkdocs-clean:
-	rm -f $(MKDOCS_DIR)
+	rm -f $(DOCS_WEB_DIR)
 	rm -rf docs-web-site
 
 # --------------------------------------------------
