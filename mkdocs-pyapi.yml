@@ -1,0 +1,31 @@
+src_root: src
+docs_root: docs-web
+site_root: docs-web-site
+
+mkdocs:
+  site_name: mkdocs-pyapi Documentation
+
+  docs_dir: docs
+  site_dir: "{{relative_to(docs_root, site_root)}}"
+
+  theme:
+    name: material
+
+  plugins:
+    - search
+    - gen-files:
+        scripts:
+          - "{{relative_to(docs_root, mkdocs_pyapi)}}" # mkdocs-pyapi plugin script
+    - mkdocstrings:
+        handlers:
+          python:
+            options:
+              docstring_style: google
+              show_source: false
+              show_root_heading: true
+              separate_signature: true
+    - autorefs
+    
+  nav:
+    - Home: index.md
+    - API: api/index.md
