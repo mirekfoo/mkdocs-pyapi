@@ -1,6 +1,20 @@
 # mkdocs-pyapi
 Complete solution for Python project API documentation generation using MKDocs.
 
+# Intro
+
+...
+
+# Usage 
+
+...
+
+# Dev Docs
+
+Docs|Remarks
+---|---
+[Markdown docs](docs-md/docs/index.md)|Generated using [mddocs](https://github.com/mirekfoo/mddocs)
+
 # Project Development
 
 ## Submodules
