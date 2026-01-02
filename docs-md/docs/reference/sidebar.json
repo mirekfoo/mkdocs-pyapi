@@ -1,0 +1,14 @@
+{
+  "items": [
+    {
+      "items": [
+        "reference/mkdocs_pyapi/gen_api",
+        "reference/mkdocs_pyapi/mkdocs_pyapi"
+      ],
+      "label": "mkdocs_pyapi",
+      "type": "category"
+    }
+  ],
+  "label": "Reference",
+  "type": "category"
+}
