@@ -22,10 +22,23 @@ STAMP = @if [ ! -d ".stamps" ]; then mkdir -p ".stamps"; fi && touch $@
 
 # --------------------------------------------------
 
+PIP_CONSTRAINTS_FILE = .pip/constraints.txt
+
+define ADD_EDIT_DEP_CONSTRAINT
+	@if [ ! -d ".pip" ]; then mkdir -p ".pip"; fi
+	@pip show $(1) | awk '/Editable project location:/ {print "$(1) @ file://" $$4}' >>$(PIP_CONSTRAINTS_FILE)
+endef
+
+$(PIP_CONSTRAINTS_FILE):
+	@touch "$(PIP_CONSTRAINTS_FILE)"
+
+# --------------------------------------------------
+
 EDIT_DEP_PYUTILS_INSTALL = .stamps/edit-dep-pyutils-install.done
 
 $(EDIT_DEP_PYUTILS_INSTALL):
 	pip install -e deps/pyutils
+	$(call ADD_EDIT_DEP_CONSTRAINT,pyutils)
 	$(STAMP)
 
 edit-deps-install: $(EDIT_DEP_PYUTILS_INSTALL)
@@ -62,8 +75,8 @@ mkdocs-clean:
 
 MDDOCS_INSTALL = .stamps/mddocs-install.done
 
-$(MDDOCS_INSTALL):
-	pip install git+https://github.com/mirekfoo/mddocs.git 
+$(MDDOCS_INSTALL): $(PIP_CONSTRAINTS_FILE)
+	pip install --no-cache-dir -c $(PIP_CONSTRAINTS_FILE) git+https://github.com/mirekfoo/mddocs.git 
 	$(STAMP)
 
 mddocs-install: $(MDDOCS_INSTALL)
