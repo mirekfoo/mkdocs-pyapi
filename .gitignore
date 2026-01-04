@@ -1,5 +1,6 @@
 
 # docs dirs
+docs-md/*.yml
 docs-web/*
 !docs-web/docs/
 !docs-web/docs/index.md
