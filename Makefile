@@ -22,29 +22,6 @@ STAMP = @if [ ! -d ".stamps" ]; then mkdir -p ".stamps"; fi && touch $@
 
 # --------------------------------------------------
 
-MKDOCS_INSTALL = .stamps/mkdocs-install.done
-
-$(MKDOCS_INSTALL):
-	pip install mkdocs mkdocs-material mkdocstrings[python] mkdocs-gen-files 
-	$(STAMP)
-
-DOCS_WEB_DIR = docs-web
-
-# --------------------------------------------------
-
-PYUTILS_INSTALL = $(EDIT_DEP_PYUTILS_INSTALL)
-
-# --------------------------------------------------
-
-mkdocs: $(MKDOCS_INSTALL) $(PYUTILS_INSTALL)
-	PYTHONPATH=./src python -m mkdocs_pyapi $(CMD)
-
-mkdocs-clean:
-	rm -f $(DOCS_WEB_DIR)
-	rm -rf docs-web-site
-
-# --------------------------------------------------
-
 MDDOCS_DEV_INSTALL = .stamps/mddocs-dev-install.done
 
 $(MDDOCS_DEV_INSTALL):
@@ -93,6 +70,29 @@ pyutils-dev-update: $(PYUTILS_DEV_INSTALL)
 
 deps-dev-install: pyutils-dev-install
 deps-dev-update: pyutils-dev-update
+
+# --------------------------------------------------
+
+PYUTILS_INSTALL = $(PYUTILS_DEV_INSTALL)
+
+# --------------------------------------------------
+
+MKDOCS_INSTALL = .stamps/mkdocs-install.done
+
+$(MKDOCS_INSTALL):
+	pip install mkdocs mkdocs-material mkdocstrings[python] mkdocs-gen-files 
+	$(STAMP)
+
+DOCS_WEB_DIR = docs-web
+
+# --------------------------------------------------
+
+mkdocs: $(MKDOCS_INSTALL) $(PYUTILS_INSTALL)
+	PYTHONPATH=./src python -m mkdocs_pyapi $(CMD)
+
+mkdocs-clean:
+	rm -f $(DOCS_WEB_DIR)
+	rm -rf docs-web-site
 
 # --------------------------------------------------
 
