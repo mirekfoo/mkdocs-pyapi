@@ -2,10 +2,10 @@ help:
 	@echo "Available targets:"
 	@echo "  help                                     - Show this help message"
 	@echo ""
-	@echo "  edit-deps-install                        - Install editable dependencies"
-	@echo "  edit-deps-update                         - Update editable dependencies"
+	@echo "  deps-dev-install                         - Install dependencies for development"
+	@echo "  deps-dev-update                          - Update dependencies for development"
 	@echo ""
-	@echo "  pyutils-update                           - Update pyutils"
+	@echo "  pyutils-dev-update                       - Update pyutils for development"
 	@echo ""
 	@echo "  mkdocs CMD=build|serve|gh-deploy         - [Build / Serve/ Deploy to GitHub Pages] web docs using mkdocs"
 	@echo "  mkdocs-clean                             - Clean the web docs"
@@ -22,31 +22,15 @@ STAMP = @if [ ! -d ".stamps" ]; then mkdir -p ".stamps"; fi && touch $@
 
 # --------------------------------------------------
 
-PIP_CONSTRAINTS_FILE = .pip/constraints.txt
+# PIP_CONSTRAINTS_FILE = .pip/constraints.txt
 
-define ADD_EDIT_DEP_CONSTRAINT
-	@if [ ! -d ".pip" ]; then mkdir -p ".pip"; fi
-	@pip show $(1) | awk '/Editable project location:/ {print "$(1) @ file://" $$4}' >>$(PIP_CONSTRAINTS_FILE)
-endef
+# define ADD_EDIT_DEP_CONSTRAINT
+# 	@if [ ! -d ".pip" ]; then mkdir -p ".pip"; fi
+# 	@pip show $(1) | awk '/Editable project location:/ {print "$(1) @ file://" $$4}' >>$(PIP_CONSTRAINTS_FILE)
+# endef
 
-$(PIP_CONSTRAINTS_FILE):
-	@touch "$(PIP_CONSTRAINTS_FILE)"
-
-# --------------------------------------------------
-
-EDIT_DEP_PYUTILS_INSTALL = .stamps/edit-dep-pyutils-install.done
-
-$(EDIT_DEP_PYUTILS_INSTALL):
-	pip install -e deps/pyutils
-	$(call ADD_EDIT_DEP_CONSTRAINT,pyutils)
-	$(STAMP)
-
-edit-deps-install: $(EDIT_DEP_PYUTILS_INSTALL)
-
-pyutils-update: $(EDIT_DEP_PYUTILS_INSTALL)
-	pushd deps/pyutils && git switch main && git pull && popd
-
-edit-deps-update: edit-deps-install pyutils-update
+# $(PIP_CONSTRAINTS_FILE):
+# 	@touch "$(PIP_CONSTRAINTS_FILE)"
 
 # --------------------------------------------------
 
@@ -73,13 +57,14 @@ mkdocs-clean:
 
 # --------------------------------------------------
 
-MDDOCS_INSTALL = .stamps/mddocs-install.done
+MDDOCS_DEV_INSTALL = .stamps/mddocs-dev-install.done
 
-$(MDDOCS_INSTALL): $(PIP_CONSTRAINTS_FILE)
-	pip install --no-cache-dir -c $(PIP_CONSTRAINTS_FILE) git+https://github.com/mirekfoo/mddocs.git 
+$(MDDOCS_DEV_INSTALL):
+	if [ ! -d "deps/mddocs" ]; then git clone https://github.com/mirekfoo/mddocs.git deps/mddocs; fi
+	pip install -e deps/mddocs
 	$(STAMP)
 
-mddocs-install: $(MDDOCS_INSTALL)
+mddocs-dev-install: $(MDDOCS_DEV_INSTALL)
 
 # --------------------------------------------------
 
@@ -89,7 +74,7 @@ PROJECT_SRC := $(wildcard src/mkdocs-pyapi/*.py)
 
 MDDOCS_GENERATE = .stamps/mddocs_generate.done
 
-$(MDDOCS_GENERATE): $(MDDOCS_INSTALL) $(PROJECT_SRC)
+$(MDDOCS_GENERATE): $(MDDOCS_DEV_INSTALL) $(PROJECT_SRC)
 	PYTHONPATH=./src python -m mddocs 
 	$(STAMP)
 
@@ -103,6 +88,23 @@ mddocs-clean:
 mddocs-run: \
 	mddocs-clean \
 	$(MDDOCS_GENERATE)
+
+# --------------------------------------------------
+
+PYUTILS_DEV_INSTALL = .stamps/pyutils-dev-install.done
+
+# install editable pyutils AFTER mddocs to avoid unwanted pyutils reinstall due to github source-pinned dependency
+$(PYUTILS_DEV_INSTALL): mddocs-dev-install
+	pip install -e deps/pyutils
+	$(STAMP)
+
+pyutils-dev-install: $(PYUTILS_DEV_INSTALL)
+
+pyutils-dev-update: $(PYUTILS_DEV_INSTALL)
+	pushd deps/pyutils && git switch main && git pull && popd
+
+deps-dev-install: pyutils-dev-install
+deps-dev-update: pyutils-dev-update
 
 # --------------------------------------------------
 
