@@ -4,10 +4,11 @@ Complete solution for Python project API documentation generation using MKDocs.
 # Intro
 
 This project integrates:
-    - [MKDocs](https://www.mkdocs.org/)
-    - [mkdocstrings\[python\]](https://mkdocstrings.github.io/) 
-    - [mkdocs-gen-files](https://github.com/oprypin/mkdocs-gen-files)
-    - [gen_api.py](src/mkdocs_pyapi/gen_api.py) custom script for project API crawler
+- [MKDocs](https://www.mkdocs.org/)
+- [mkdocstrings\[python\]](https://mkdocstrings.github.io/) 
+- [mkdocs-gen-files](https://github.com/oprypin/mkdocs-gen-files)
+- [gen_api.py](src/mkdocs_pyapi/gen_api.py) custom script for project API crawler
+
 into a single command `mkdocs-pyapi` to generate Python project API documentation in HTML.
 
 # Usage 
