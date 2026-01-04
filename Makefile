@@ -22,18 +22,6 @@ STAMP = @if [ ! -d ".stamps" ]; then mkdir -p ".stamps"; fi && touch $@
 
 # --------------------------------------------------
 
-# PIP_CONSTRAINTS_FILE = .pip/constraints.txt
-
-# define ADD_EDIT_DEP_CONSTRAINT
-# 	@if [ ! -d ".pip" ]; then mkdir -p ".pip"; fi
-# 	@pip show $(1) | awk '/Editable project location:/ {print "$(1) @ file://" $$4}' >>$(PIP_CONSTRAINTS_FILE)
-# endef
-
-# $(PIP_CONSTRAINTS_FILE):
-# 	@touch "$(PIP_CONSTRAINTS_FILE)"
-
-# --------------------------------------------------
-
 MKDOCS_INSTALL = .stamps/mkdocs-install.done
 
 $(MKDOCS_INSTALL):
