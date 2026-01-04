@@ -40,7 +40,7 @@ PROJECT_SRC := $(wildcard src/mkdocs-pyapi/*.py)
 MDDOCS_GENERATE = .stamps/mddocs_generate.done
 
 $(MDDOCS_GENERATE): $(MDDOCS_DEV_INSTALL) $(PROJECT_SRC)
-	PYTHONPATH=./src python -m mddocs 
+	mddocs
 	$(STAMP)
 
 mddocs-build: \
@@ -83,7 +83,7 @@ $(MKDOCS_INSTALL):
 	pip install mkdocs mkdocs-material mkdocstrings[python] mkdocs-gen-files 
 	$(STAMP)
 
-DOCS_WEB_DIR = docs-web
+MKDOCS_DIR = docs-web
 
 # --------------------------------------------------
 
@@ -91,7 +91,7 @@ mkdocs: $(MKDOCS_INSTALL) $(PYUTILS_INSTALL)
 	PYTHONPATH=./src python -m mkdocs_pyapi $(CMD)
 
 mkdocs-clean:
-	rm -f $(DOCS_WEB_DIR)
+	rm -f $(MKDOCS_DIR)/*.yml
 	rm -rf docs-web-site
 
 # --------------------------------------------------
