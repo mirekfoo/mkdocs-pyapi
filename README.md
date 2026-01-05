@@ -29,6 +29,9 @@ pip install git+https://github.com/mirekfoo/mkdocs-pyapi.git
         - MkDocs User Guide - [Configuration](https://www.mkdocs.org/user-guide/configuration/),
         - [mkdocs.yml](https://github.com/oprypin/mkdocs-gen-files/blob/master/mkdocs.yml) in [mkdocs-gen-files](https://github.com/oprypin/mkdocs-gen-files) repository.
 
+* Optionally create (assuming `docs-web` is your **mkdocs-pyapi** root directory):
+    - `docs-web\docs\index.md` main doc page file
+    - and other custom doc pages.
 
 ## Generate docs
 
