@@ -1,3 +1,6 @@
 [submodule "deps/pyutils"]
 	path = deps/pyutils
 	url = https://github.com/mirekfoo/pyutils.git
+[submodule "deps/mddocs"]
+	path = deps/mddocs
+	url = https://github.com/mirekfoo/mddocs.git
