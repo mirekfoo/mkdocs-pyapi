@@ -4,6 +4,3 @@
 [submodule "deps/mddocs"]
 	path = deps/mddocs
 	url = https://github.com/mirekfoo/mddocs.git
-[submodule "deps/mddocs/pyutils"]
-	path = deps/mddocs/pyutils
-	url = https://github.com/mirekfoo/pyutils.git
